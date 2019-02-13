@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.wiring.BundleWiring;
 import org.wso2.carbon.utils.CarbonUtils;
 
 /**
@@ -29,6 +30,8 @@ public class WebappManagementActivator implements BundleActivator {
     private static final Log log = LogFactory.getLog(WebappManagementActivator.class);
 
     private ServiceRegistration serviceRegistration;
+
+    private static ClassLoader bundleClassLoader;
 
     public void start(final BundleContext bundleContext) {
 
@@ -55,6 +58,12 @@ public class WebappManagementActivator implements BundleActivator {
             }
             th.start();
         }
+        bundleClassLoader = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
+    }
+
+    public static ClassLoader getBundleClassLoader() {
+
+        return bundleClassLoader;
     }
 
     public void stop(BundleContext bundleContext) {

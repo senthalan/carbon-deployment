@@ -21,6 +21,7 @@ import org.apache.catalina.loader.WebappClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.webapp.mgt.internal.WebappManagementActivator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class CarbonWebappClassLoader extends WebappClassLoader {
     private static List<String> systemPackages;
 
     public CarbonWebappClassLoader(ClassLoader parent) {
-        super(parent);
+        super(WebappManagementActivator.getBundleClassLoader());
         String launchIniPath = Paths.get(CarbonUtils.getCarbonConfigDirPath(), "etc", "launch.ini").toString();
         readSystemPackagesList(launchIniPath);
     }
