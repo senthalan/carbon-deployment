@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wso2.carbon.deployment</groupId>
         <artifactId>service-mgt-stub</artifactId>
-        <version>4.9.1-SNAPSHOT</version>
+        <version>4.9.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -82,10 +82,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-scr-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
