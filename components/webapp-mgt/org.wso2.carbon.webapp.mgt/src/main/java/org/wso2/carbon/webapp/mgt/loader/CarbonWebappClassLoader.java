@@ -17,6 +17,7 @@
  */
 package org.wso2.carbon.webapp.mgt.loader;
 
+import org.apache.catalina.WebResource;
 import org.apache.catalina.loader.WebappClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,8 +27,8 @@ import org.wso2.carbon.utils.CarbonUtils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -46,26 +47,18 @@ public class CarbonWebappClassLoader extends WebappClassLoader {
     private static final Log log = LogFactory.getLog(CarbonWebappClassLoader.class);
 
     private WebappClassloadingContext webappCC;
-
     private static List<String> systemPackages;
     private static final String CLASS_FILE_SUFFIX = ".class";
 
     public CarbonWebappClassLoader(ClassLoader parent) {
-        super(parent);
+        super(new SharedURLClassLoader(new URL[0], null));
         String launchIniPath = Paths.get(CarbonUtils.getCarbonConfigDirPath(), "etc", "launch.ini").toString();
         readSystemPackagesList(launchIniPath);
     }
 
     public void setWebappCC(WebappClassloadingContext classloadingContext) {
         this.webappCC = classloadingContext;
-        // Adding provided classpath entries, if any
-        for (String repository : webappCC.getProvidedRepositories()) {
-            try {
-                addURL(new URL(repository));
-            } catch (MalformedURLException e) {
-                // do nothing
-            }
-        }
+        ((SharedURLClassLoader)this.parent).setWebappCC(classloadingContext);
     }
 
     @Override

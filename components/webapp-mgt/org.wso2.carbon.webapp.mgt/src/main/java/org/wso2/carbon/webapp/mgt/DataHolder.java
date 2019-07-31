@@ -21,6 +21,7 @@ import org.wso2.carbon.core.deployment.DeploymentSynchronizer;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 import org.wso2.carbon.tomcat.api.CarbonTomcatService;
+import org.wso2.carbon.tomcat.ext.internal.CarbonTomcatServiceHolder;
 import org.wso2.carbon.url.mapper.HotUpdateService;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.CarbonUtils;
@@ -37,6 +38,7 @@ public class DataHolder {
     private static RegistryService registryService;
     private static TenantRegistryLoader tenantRegistryLoader;
     private static ApplicationManagerService applicationManager;
+    private static ClassLoader tccl;
 
     public static RealmService getRealmService() {
         return realmService;
@@ -102,5 +104,13 @@ public class DataHolder {
 
     public static void setApplicationManager(ApplicationManagerService applicationManager) {
         DataHolder.applicationManager = applicationManager;
+    }
+
+    public static void setTccl(ClassLoader tccl) {
+        CarbonTomcatServiceHolder.tccl = tccl;
+    }
+
+    public static ClassLoader getTccl() {
+        return tccl;
     }
 }

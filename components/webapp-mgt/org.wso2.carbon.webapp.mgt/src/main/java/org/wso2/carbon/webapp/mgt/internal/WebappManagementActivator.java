@@ -21,6 +21,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.webapp.mgt.DataHolder;
 
 /**
  * Activator for the Webapp Management Bundle
@@ -53,6 +54,11 @@ public class WebappManagementActivator implements BundleActivator {
             }
             th.start();
         }
+
+        /*acquiring the thread context classLoader, so that we can swap the default, threadContextClassLoader of
+         tomcat transport listeners (web-app classLoader) during the service method invocation in {@link DelegationServlet}
+         */
+        DataHolder.setTccl(Thread.currentThread().getContextClassLoader());
     }
 
     public void stop(BundleContext bundleContext) {
