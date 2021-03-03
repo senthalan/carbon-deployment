@@ -39,7 +39,11 @@ public class WebappDeployer extends AbstractWebappDeployer {
 
     @Override
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
+        long startTime = System.currentTimeMillis();
+        log.info("#### Deploying | webappDeployer | " + deploymentFileData.getName());
         super.deploy(deploymentFileData);
+        long endTime = System.currentTimeMillis();
+        log.info("#### Deployed | webappDeployer | " + deploymentFileData.getName() + " | " + (endTime - startTime));
     }
 
     public void setDirectory(String repoDir) {

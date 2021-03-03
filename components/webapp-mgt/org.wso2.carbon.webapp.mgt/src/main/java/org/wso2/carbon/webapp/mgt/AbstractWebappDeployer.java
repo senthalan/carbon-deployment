@@ -197,6 +197,8 @@ public abstract class AbstractWebappDeployer extends AbstractDeployer {
             }
 
             // check whether the webapp should be stopped
+            long startTime = System.currentTimeMillis();
+            log.info("#### Checking whether the webapp should be stopped | " + deploymentFileData.getFile());
             WebApplicationsHolder webApplicationsHolder
                     = WebAppUtils.getWebappHolder(deploymentFileData.getAbsolutePath(), configContext);
             Map<String, WebApplication> startedWebapps = webApplicationsHolder.getStartedWebapps();
@@ -212,6 +214,8 @@ public abstract class AbstractWebappDeployer extends AbstractDeployer {
                     }
                 }
             }
+            long endTime = System.currentTimeMillis();
+            log.info("#### Checked whether the webapp should be stopped | " + deploymentFileData.getFile() + " | " + (endTime - startTime));
         }
     }
 
@@ -221,11 +225,19 @@ public abstract class AbstractWebappDeployer extends AbstractDeployer {
             // Object can be of listeners interfaces in javax.servlet.*
             ArrayList<Object> listeners = new ArrayList<Object>(1);
             //            listeners.add(new CarbonServletRequestListener());
+            long startTime = System.currentTimeMillis();
+            log.info("#### Deploying | tomcatWebappDeployer | " + deploymentFileData.getName());
             tomcatWebappDeployer.deploy(deploymentFileData.getFile(),
                     (ArrayList<WebContextParameter>) configContext.getProperty(
                             CarbonConstants.SERVLET_CONTEXT_PARAMETER_LIST),
                     listeners);
+            long endTime = System.currentTimeMillis();
+            log.info("#### Deployed | tomcatWebappDeployer | " + deploymentFileData.getName()  + " | " + (endTime - startTime));
+            startTime = System.currentTimeMillis();
+            log.info("#### Deploying | super.deploy | " + deploymentFileData.getName());
             super.deploy(deploymentFileData);
+            endTime = System.currentTimeMillis();
+            log.info("#### Deployed | super.deploy | " + deploymentFileData.getName()  + " | " + (endTime - startTime));
 
             WebApplication webApplication = GhostWebappDeployerUtils.findDeployedWebapp(
                     configContext, deploymentFileData.getFile().getAbsolutePath());
@@ -241,7 +253,11 @@ public abstract class AbstractWebappDeployer extends AbstractDeployer {
                 webApplication.setProperty(WebappsConstants.WEBAPP_FILTER, webappType);
 
                 if (!CarbonUtils.isWorkerNode()) {
+                    startTime = System.currentTimeMillis();
+                    log.info("#### Calling persistWebappMetadata | " + deploymentFileData.getName());
                     persistWebappMetadata(webApplication, axisConfig);
+                    endTime = System.currentTimeMillis();
+                    log.info("#### Called persistWebappMetadata | " + deploymentFileData.getName()  + " | " + (endTime - startTime));
                 }
 
             }

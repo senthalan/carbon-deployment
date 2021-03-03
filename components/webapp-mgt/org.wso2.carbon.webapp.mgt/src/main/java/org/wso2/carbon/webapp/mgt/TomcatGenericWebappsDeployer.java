@@ -251,9 +251,13 @@ public class TomcatGenericWebappsDeployer {
                 PrivilegedCarbonContext.getThreadLocalCarbonContext();
         String filename = webappFile.getName();
         try {
+            long startTime = System.currentTimeMillis();
+            log.info("#### Adding to the CarbonTomcatService | " + webappFile.getName());
             Context context = DataHolder.getCarbonTomcatService()
                                         .addWebApp(WebAppUtils.getHost(webappFile.getAbsolutePath()), contextStr,
                                                    webappFile.getAbsolutePath());
+            long endTime = System.currentTimeMillis();
+            log.info("#### Added to the CarbonTomcatService | " + webappFile.getName() + " | " + (endTime - startTime));
 
             Manager manager = context.getManager();
             if (context.getDistributable() && (DataHolder.getCarbonTomcatService().getTomcat().
@@ -481,13 +485,18 @@ public class TomcatGenericWebappsDeployer {
      * @throws ArtifactMetadataException
      */
     protected String recievePersistedWebappMetaData(File webappFile, String propertyName) throws AxisFault, ArtifactMetadataException {
+        long startTime = System.currentTimeMillis();
+        log.info("#### Calling recievePersistedWebappMetaData | " + webappFile.getName());
         AxisConfiguration axisConfig = configurationContext.getAxisConfiguration();
         String artifactDir = WebAppUtils.generateMetaFileDirName(webappFile.getAbsolutePath(), this.configurationContext);
         ArtifactType type = new ArtifactType(WebappsConstants.WEBAPP_FILTER_PROP, WebappsConstants.WEBAPP_METADATA_BASE_DIR +
                 File.separator + artifactDir);
         ArtifactMetadataManager manager = DeploymentArtifactMetadataFactory.getInstance(axisConfig).
                 getMetadataManager();
-        return manager.loadParameter(webappFile.getName(), type, propertyName);
+        String param = manager.loadParameter(webappFile.getName(), type, propertyName);
+        long endTime = System.currentTimeMillis();
+        log.info("#### Called recievePersistedWebappMetaData | " + webappFile.getName()  + " | " + (endTime - startTime));
+        return param;
     }
 
     /**
